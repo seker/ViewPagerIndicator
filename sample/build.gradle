@@ -1,0 +1,75 @@
+import java.text.SimpleDateFormat
+
+apply plugin: 'com.android.application'
+
+int versionName2VersionCode(String versionName) {
+    project.logger.log(LogLevel.WARN, "versionName=${versionName}")
+    String[] ary = versionName.split("\\.")
+    project.logger.log(LogLevel.WARN, "ary=${Arrays.toString(ary)}")
+    int versionCode = Integer.parseInt(ary[0]) * Math.pow(2, 24) + Integer.parseInt(ary[1]) * Math.pow(2, 16) + Integer.parseInt(ary[2]) * Math.pow(2, 8)
+    project.logger.log(LogLevel.WARN, "versionCode=${versionCode}")
+    return versionCode
+}
+
+android {
+    compileSdkVersion 30
+    buildToolsVersion "30.0.3"
+
+    defaultConfig {
+        applicationId "com.viewpagerindicator.sample"
+        minSdkVersion 21
+        targetSdkVersion 30
+        versionName "1.0.0.${new SimpleDateFormat("yyyy_MM_dd-HH_mm", Locale.US).format(new Date(System.currentTimeMillis()))}"
+        versionCode versionName2VersionCode(versionName)
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    sourceSets {
+        main.manifest.srcFile 'AndroidManifest.xml'
+        main.res.srcDirs = ['res']
+        main.java.srcDirs = ['src']
+//        main.assets.srcDirs = ['assets']
+//        main.jniLibs.srcDirs = ['libs']
+//        main.jni.srcDirs = ['jni']
+//        main.aidl.srcDirs = ['aidl']
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
+    }
+}
+
+android.applicationVariants.all { variant ->
+    variant.outputs.all {
+        project.logger.log(LogLevel.WARN, "outputFileName = ${outputFileName}")
+        outputFileName = "${project.name}-v${variant.mergedFlavor.versionName}-${variant.buildType.name}.apk".replaceAll("/", "-")
+        project.logger.log(LogLevel.WARN, "outputFileName = ${outputFileName}")
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation project(':library')
+
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+
+    implementation 'androidx.multidex:multidex:2.0.1'
+
+    // https://github.com/iqiyi/xCrash
+    // https://mvnrepository.com/artifact/com.iqiyi.xcrash/xcrash-android-lib
+    implementation 'com.iqiyi.xcrash:xcrash-android-lib:3.0.0'
+
+    // https://github.com/square/leakcanary
+    // https://mvnrepository.com/artifact/com.squareup.leakcanary/leakcanary-android
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.5'
+}

@@ -4,13 +4,13 @@
     android:versionCode="65"
     android:versionName="2.4.1">
 
-    <uses-sdk
-        android:minSdkVersion="4"
-        android:targetSdkVersion="16" />
-
     <application
+        android:theme="@style/AppTheme"
         android:label="ViewPagerIndicator Sample"
-        android:icon="@drawable/icon">
+        android:icon="@drawable/icon"
+        android:name=".MyApplication"
+        android:allowBackup="true"
+        android:fullBackupContent="true">
 
         <activity
             android:name=".ListSamples"
